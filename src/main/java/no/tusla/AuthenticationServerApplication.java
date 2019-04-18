@@ -1,12 +1,10 @@
 package no.tusla;
 
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -18,15 +16,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @EnableResourceServer
 @EnableAuthorizationServer
-@EnableDiscoveryClient
 public class AuthenticationServerApplication {
 	
 	 @RequestMapping(value = { "/user" }, produces = "application/json")
 	 public Map<String, Object> user(OAuth2Authentication user) 
 	 {
+	     
 	        Map<String, Object> userInfo = new HashMap<>();
-	        userInfo.put("user", user.getUserAuthentication().getPrincipal());
-	        userInfo.put("authorities", AuthorityUtils.authorityListToSet(user.getUserAuthentication().getAuthorities()));
+	        if(user.getUserAuthentication()==null)
+	        {
+	            userInfo.put("user", user.getOAuth2Request().getClientId());	            
+	        }
+	        else
+	        {
+    	        userInfo.put("user", user.getUserAuthentication().getPrincipal());
+    	        userInfo.put("authorities", AuthorityUtils.authorityListToSet(user.getUserAuthentication().getAuthorities()));
+	        }
 	        return userInfo;
 	 }
 	 
