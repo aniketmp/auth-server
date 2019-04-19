@@ -13,7 +13,7 @@ import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHand
 import org.springframework.boot.autoconfigure.security.SecurityProperties; 
 @Configuration
 @EnableWebSecurity
-@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER) 
+//@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER) //Only in case of authorization_code grant type, this needs to be commented.
 public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter
 {
 	@Override
@@ -27,6 +27,16 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter
 	public UserDetailsService userDetailsServiceBean() throws Exception {
 		return super.userDetailsServiceBean();
 	}
+
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
+        http
+        .csrf().disable()        
+        .authorizeRequests()
+        .and()
+        .formLogin()
+        .permitAll().and().logout().permitAll();
+    }
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception 
 	{
