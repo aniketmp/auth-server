@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,19 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationServerApplication {
 	
 	 @RequestMapping(value = { "/user" }, produces = "application/json")
-	 public Map<String, Object> user(OAuth2Authentication user) 
-	 {
-	     
+	 public Object user(OAuth2Authentication user) 
+	 {		
 	        Map<String, Object> userInfo = new HashMap<>();
-	        if(user.getUserAuthentication()==null)
-	        {
-	            userInfo.put("user", user.getOAuth2Request().getClientId());	            
-	        }
-	        else
-	        {
-    	        userInfo.put("user", user.getUserAuthentication().getPrincipal());
-    	        userInfo.put("authorities", AuthorityUtils.authorityListToSet(user.getUserAuthentication().getAuthorities()));
-	        }
+	        
+	        userInfo.put("user", user.getPrincipal());
+	        userInfo.put("scope", user.getOAuth2Request().getScope());
+	        
 	        return userInfo;
 	 }
 	 

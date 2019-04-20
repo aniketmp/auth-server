@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 @Configuration
 public class Oauth2Config  extends AuthorizationServerConfigurerAdapter
 {	
@@ -25,5 +26,13 @@ public class Oauth2Config  extends AuthorizationServerConfigurerAdapter
                 .authorizedGrantTypes("client_credentials","password","authorization_code")	    //add refresh_token grant if you need refresh token              
                 .scopes("webclient", "mobileclient");
     }
+	 
+	 @Override
+	 public void configure(AuthorizationServerSecurityConfigurer oauthServer)
+	            throws Exception {
+	        oauthServer
+	                .tokenKeyAccess("permitAll()")
+	                .checkTokenAccess("permitAll()");
+	    }
 	 	   
 }
